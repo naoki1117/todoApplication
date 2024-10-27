@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { TodoType } from "../types/types";
 import { format } from "date-fns";
 import { v4 as uuidv4 } from "uuid"; // uuidをインポート
@@ -14,6 +14,18 @@ export default function InputForm() {
     removed: false,
     createdAt: format(new Date(), "yyyyMMdd"),
   });
+  // 初回レンダリング時に localStorage からデータを読み込む
+  useEffect(() => {
+    const savedTodos = localStorage.getItem("todos");
+    if (savedTodos) {
+      setTodos(JSON.parse(savedTodos));
+    }
+  }, []);
+
+  // inputValsが変更されるたびにlocalStorageに保存する
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
   const handleChange = (
     e:
       | React.ChangeEvent<HTMLInputElement>
